@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, avoid_print, duplicate_ignore
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +8,7 @@ import 'package:miamiga_app/components/my_important_btn.dart';
 import 'package:miamiga_app/model/datos_denunciante.dart';
 import 'package:miamiga_app/model/datos_incidente.dart';
 import 'package:miamiga_app/model/datos_registro_usuario.dart';
-import 'package:miamiga_app/pages/incidente.dart';
+import 'package:miamiga_app/pages/incidente_usuario.dart';
 
 class InicioScreen extends StatefulWidget {
   final User? user;
@@ -26,21 +26,8 @@ class InicioScreen extends StatefulWidget {
 }
 
 class _InicioScreenState extends State<InicioScreen> {
-
   Future<String> getUserName(User? user) async {
-    
-  if (user != null) {
-    // Check if the user is signed in with Google
-    if (user.providerData.any((userInfo) => userInfo.providerId == 'google.com')) {
-      // If signed in with Google, return the user's display name
-      return user.displayName ?? 'Usuario desconocido';
-    } else {
-      // If not signed in with Google, you can implement a different logic
-      // to get the user's name based on your authentication method.
-      // For example, if using email/password, you can fetch it from Firestore
-      // or another database using the user's UID.
-      // Here's an example using Firestore:
-
+    if (user != null) {
       try {
         DocumentSnapshot snapshot = await FirebaseFirestore.instance
             .collection('users')
@@ -58,78 +45,47 @@ class _InicioScreenState extends State<InicioScreen> {
         print('Error getting user name: $e');
         return 'Usuario desconocido';
       }
+    } else {
+      return 'Usuario desconocido';
     }
-  } else {
-    return 'Usuario desconocido';
   }
-}
 
-  void denunciarScreen() async{
-      //i want a navigator to go to the edit perfil page
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => DenunciaIncidente(
-            user: widget.user, 
-            incidentData: widget.incidentData, 
-            denuncianteData: widget.denunciaData,
-          ), 
+  void denunciarScreen() async {
+    //i want a navigator to go to the edit perfil page
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => DenunciaIncidente(
+          user: widget.user,
+          incidentData: widget.incidentData,
+          denuncianteData: widget.denunciaData,
         ),
-      );
+      ),
+    );
+  }
+
+  Future<UserRegister> fetchDenuncianteData(String? userId) async {
+    if (userId == null) {
+      throw Exception('User ID is null');
     }
 
-    Future<String> fetchCaseData(String? userId) async {
-      if (userId == null) {
-        throw Exception('User ID is null');
-      }
-
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('cases')
-          .where('user', isEqualTo: userId)
-          .get();
-
-      if (querySnapshot.docs.isEmpty) {
-        return 'No hay casos';
-      }
-
-      return querySnapshot.docs.first.id;
+    final doc =
+        await FirebaseFirestore.instance.collection('users').doc(userId).get();
+    if (!doc.exists) {
+      throw Exception('No user found with ID $userId');
     }
 
-    Future<UserRegister> fetchDenuncianteData(String? userId) async {
-      if (userId == null) {
-        throw Exception('User ID is null');
-      }
+    return UserRegister(
+      ci: doc.get('ci'),
+      fullname: doc.get('fullname'),
+      email: doc.get('email'),
+      phone: doc.get('phone'),
+      lat: doc.get('lat'),
+      long: doc.get('long'),
+    );
+  }
 
-      final doc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .get();
-      if (!doc.exists) {
-        throw Exception('No user found with ID $userId');
-      }
-
-      return UserRegister(
-        ci: doc.get('ci'),
-        fullname: doc.get('fullname'),
-        email: doc.get('email'),
-        phone: doc.get('phone'),
-        lat: doc.get('lat'),
-        long: doc.get('long'),
-      ); 
-     }
-    
-    Future<void> createAlert(User? user) async {
+  Future<void> createAlert(User? user) async {
     try {
-      showDialog(
-        context: context, 
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return const Center(
-            child: CircularProgressIndicator(
-              color: Color.fromRGBO(255, 87, 110, 1),
-            ),
-          );
-        }
-      );
       // Extract UID from user
       String? userId = user?.uid;
 
@@ -138,19 +94,20 @@ class _InicioScreenState extends State<InicioScreen> {
         return;
       }
 
-      String caseId = await fetchCaseData(userId);
+      // String caseId = await fetchCaseData(userId);
 
       UserRegister userRegister = await fetchDenuncianteData(userId);
 
       // The rest of your code remains unchanged
-      final CollectionReference _alert = FirebaseFirestore.instance.collection('alert');
+      final CollectionReference _alert =
+          FirebaseFirestore.instance.collection('alert');
 
-      QuerySnapshot<Object?> userAlerts = await _alert.where('user', isEqualTo: userId).get();
+      QuerySnapshot<Object?> userAlerts =
+          await _alert.where('user', isEqualTo: userId).get();
 
-      QuerySnapshot<Object?> querySnapshot = await _alert.orderBy('alert', descending: true).limit(1).get();
-      int currentMaxAlert = querySnapshot.docs.isNotEmpty ? querySnapshot.docs.first.get('alert') : 0;
-
-      int newAlert = currentMaxAlert + 1;
+      int newAlert = userAlerts.docs.isNotEmpty
+          ? userAlerts.docs.first.get('alert') + 1
+          : 1;
 
       // Show a confirmation dialog
       bool confirmAlert = await showDialog(
@@ -178,7 +135,7 @@ class _InicioScreenState extends State<InicioScreen> {
                 child: const Text(
                   'Confirmar',
                   style: TextStyle(
-                    color: Colors.red,
+                    color: Color.fromRGBO(255, 87, 110, 1),
                   ),
                 ),
               ),
@@ -188,16 +145,30 @@ class _InicioScreenState extends State<InicioScreen> {
       );
 
       if (confirmAlert == true) {
-        if (userAlerts.docs.isNotEmpty) {
-        DocumentSnapshot<Object?> userAlert = userAlerts.docs.first;
+        showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  color: Color.fromRGBO(255, 87, 110, 1),
+                ),
+              );
+            });
 
-        await _alert.doc(userAlert.id).update({
-          'alert': newAlert,
-          'case': caseId,
-          'fecha': DateTime.now(),
-        });
-        Navigator.of(context).pop();
-        ScaffoldMessenger.of(context).showSnackBar(
+        if (userAlerts.docs.isNotEmpty) {
+          DocumentSnapshot<Object?> userAlert = userAlerts.docs.first;
+
+          await _alert.doc(userAlert.id).update({
+            'alert': newAlert,
+            'fecha': DateTime.now(),
+          });
+
+          // await FirebaseFirestore.instance.collection('cases').doc(caseId).update({
+          //   'alertCount': newAlert,
+          // });
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Alerta actualizada'),
               duration: Duration(seconds: 3),
@@ -215,11 +186,7 @@ class _InicioScreenState extends State<InicioScreen> {
             'lat': userRegister.lat,
             'long': userRegister.long,
             'fecha': DateTime.now(),
-            'case': caseId,
-          });
-
-          await FirebaseFirestore.instance.collection('cases').doc(caseId).update({
-            'alert': newAlert,
+            // 'case': caseId,
           });
 
           Navigator.of(context).pop();
@@ -258,7 +225,7 @@ class _InicioScreenState extends State<InicioScreen> {
 
   // Future<void> checkUserProfile() async {
   //   final user = FirebaseAuth.instance.currentUser;
-      
+
   //   if(user != null) {
   //     final DocumentSnapshot userDoc =
   //       await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
@@ -271,7 +238,7 @@ class _InicioScreenState extends State<InicioScreen> {
   //             || userData['phone'] == null
   //             || userData['lat'] == null
   //             || userData['long'] == null) {
-            
+
   //         }
   //       }
   //   }
@@ -306,23 +273,23 @@ class _InicioScreenState extends State<InicioScreen> {
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return const Center(
-                      child: CircularProgressIndicator(
-                        color: Color.fromRGBO(255, 87, 110, 1),
-                      )
-                    );
+                        child: CircularProgressIndicator(
+                      color: Color.fromRGBO(255, 87, 110, 1),
+                    ));
                   } else {
                     final userName = snapshot.data ?? 'Usuario desconocido';
                     return Center(
                       child: Column(
                         children: [
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 30.0),
                             child: Text(
                               'Bienvenido, $userName',
-                                style: const TextStyle(fontSize: 40),
-                                textAlign: TextAlign.start,
+                              style: const TextStyle(fontSize: 40),
+                              textAlign: TextAlign.start,
                             ),
-                          ),    
+                          ),
                           const SizedBox(height: 100),
                           MyImportantBtn(
                             text: 'DENUNCIAR',
@@ -331,7 +298,7 @@ class _InicioScreenState extends State<InicioScreen> {
                           const SizedBox(height: 100),
                           ImportantButton(
                             text: 'ALERTA',
-                            onTap: () async{
+                            onTap: () async {
                               User? user = widget.user;
                               // DenuncianteData denuncianteData = widget.denunciaData;
                               await createAlert(user);

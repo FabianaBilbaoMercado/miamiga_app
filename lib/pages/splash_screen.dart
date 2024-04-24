@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // ignore: unused_import
-import 'package:miamiga_app/pages/inicio.dart';
+import 'package:miamiga_app/pages/inicio_usuario.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

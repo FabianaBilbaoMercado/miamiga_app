@@ -5,19 +5,20 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class CurrentLocationScreen extends StatefulWidget {
-  
   const CurrentLocationScreen({super.key});
 
   @override
   State<CurrentLocationScreen> createState() => _CurrentLocationScreenState();
 }
 
-class _CurrentLocationScreenState extends State<CurrentLocationScreen> with WidgetsBindingObserver{
+class _CurrentLocationScreenState extends State<CurrentLocationScreen>
+    with WidgetsBindingObserver {
   final BitmapDescriptor customMarker = BitmapDescriptor.defaultMarkerWithHue(
     BitmapDescriptor.hueGreen,
   );
 
-  LatLng selectedLatLng = LatLng(initialCameraPosition.target.latitude, initialCameraPosition.target.longitude);
+  LatLng selectedLatLng = LatLng(initialCameraPosition.target.latitude,
+      initialCameraPosition.target.longitude);
   late GoogleMapController googleMapController;
   Set<Marker> markers = {};
   LatLng selectedLocation = initialCameraPosition.target;
@@ -58,13 +59,15 @@ class _CurrentLocationScreenState extends State<CurrentLocationScreen> with Widg
         }
       }
 
-      position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
     } catch (e) {
       print('Error obteniendo ubicación actual: $e');
     }
 
     if (position != null) {
-      if (mounted) { // Check if the widget is still in the widget tree
+      if (mounted) {
+        // Check if the widget is still in the widget tree
         setState(() {
           initialCameraPosition = CameraPosition(
             target: LatLng(position!.latitude, position.longitude),
@@ -91,20 +94,31 @@ class _CurrentLocationScreenState extends State<CurrentLocationScreen> with Widg
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Servicios de ubicación deshabilitados'),
-          content: const Text('Por favor habilite los servicios de ubicación en tus configuraciones.'),
+          content: const Text(
+              'Por favor habilite los servicios de ubicación en tus configuraciones.'),
           actions: <Widget>[
             TextButton(
-              child: const Text('Abrir configuraciones'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text(
+                'Cancelar',
+                style: TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+            TextButton(
+              child: const Text(
+                'Abrir configuraciones',
+                style: TextStyle(
+                  color: Color.fromRGBO(255, 87, 110, 1),
+                ),
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
                 Geolocator.openLocationSettings();
               },
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancelar'),
             ),
           ],
         );
@@ -148,9 +162,10 @@ class _CurrentLocationScreenState extends State<CurrentLocationScreen> with Widg
               Navigator.of(context).pop(selectedLocation);
             },
             label: inSelectionMode
-              ? const Text('Confirmar')
-              : const Text('Confirmado'),
+                ? const Text('Confirmar')
+                : const Text('Confirmado'),
             icon: const Icon(Icons.check),
+            backgroundColor: Colors.green,
           ),
           const SizedBox(width: 16),
           FloatingActionButton.extended(
@@ -161,6 +176,7 @@ class _CurrentLocationScreenState extends State<CurrentLocationScreen> with Widg
             },
             label: const Text('Cancelar'),
             icon: const Icon(Icons.cancel),
+            backgroundColor: Colors.red,
           ),
         ],
       ),

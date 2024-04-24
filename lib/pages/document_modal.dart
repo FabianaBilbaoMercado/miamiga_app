@@ -28,16 +28,6 @@ class _DocumentModalState extends State<DocumentModal> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            // const Padding(
-            //   padding: EdgeInsets.all(24.0),
-            //   child: Text(
-            //     'Seleccionar Documento',
-            //     style: TextStyle(
-            //       fontSize: 20.0,
-            //       fontWeight: FontWeight.bold,
-            //     ),
-            //   ),
-            // ),
             Expanded(
               child: PageView.builder(
                 itemCount: widget.pickedDocuments.length,
@@ -83,6 +73,7 @@ class _DocumentModalState extends State<DocumentModal> {
                   icon: const Icon(
                     Icons.file_copy,
                     size: 50,
+                    color: Colors.white,
                   ),
                   label: const SizedBox.shrink(),
                   style: ElevatedButton.styleFrom(

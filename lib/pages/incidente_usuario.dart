@@ -19,9 +19,11 @@ import 'package:miamiga_app/components/row_button.dart';
 import 'package:miamiga_app/model/datos_denunciante.dart';
 import 'package:miamiga_app/model/datos_incidente.dart';
 import 'package:miamiga_app/pages/audio_modal.dart';
-import 'package:miamiga_app/pages/denunciante.dart';
+//import 'package:miamiga_app/pages/denunciante.dart';
+import 'package:miamiga_app/pages/denunciante_usuario.dart';
+import 'package:miamiga_app/pages/google_maps.dart';
 import 'package:miamiga_app/pages/image_modal.dart';
-import 'package:miamiga_app/pages/map.dart';
+
 
 class DenunciaIncidente extends StatefulWidget {
   final User? user;
@@ -164,11 +166,18 @@ class _DenunciaIncidenteState extends State<DenunciaIncidente> {
     }
   }
 
+  // void updateImages(List<XFile> newImages) {
+  //   setState(() {
+  //     pickedImages.addAll(newImages);
+  //   });
+  // }
+
   void cargarImagen() async {
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return ImageModal(
+        // updateImages: updateImages,
         pickedImages: pickedImages,
         onImagesSelected: (ImageSource source) async {
           if (source == ImageSource.camera) {

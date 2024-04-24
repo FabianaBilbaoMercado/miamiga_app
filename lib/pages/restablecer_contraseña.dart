@@ -43,6 +43,9 @@ class _ResetPasswordState extends State<ResetPassword> {
           return const AlertDialog(
             content: Text(
               'Enlace para restablecer contraseña a sido enviado! Revisa su correo',
+              style: TextStyle(
+                color: Color.fromRGBO(255, 87, 110, 1),
+              ),
             ),
           );
         }
@@ -74,14 +77,6 @@ class _ResetPasswordState extends State<ResetPassword> {
               const Header(
                 header: 'Restablecer Contraseña',
               ),
-              /* const SizedBox(height: 50),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 25.0),
-                child: Text(
-                  'Ingrese su correo para restablecer contraseña',
-                  textAlign: TextAlign.center,
-                ),
-              ), */
               const SizedBox(height: 25),
               MyTextField(
                 controller: emailController,

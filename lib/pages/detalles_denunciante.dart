@@ -299,19 +299,6 @@ class _DetalleDenunciaState extends State<DetalleDenuncia> {
                       obscureText: false,
                       isEnabled: false,
                       isVisible: true),
-                  // const SizedBox(height: 15),
-                  // MyImportantBtn(
-                  //   onTap: () {
-                  //     print('Passing user: ${widget.user}');
-                  //     Navigator.of(context).pushNamed(
-                  //       '/evidence',
-                  //       arguments: {
-                  //         'user': widget.user
-                  //       }
-                  //     );
-                  //   },
-                  //   text: 'Realizar denuncia'
-                  // ),
                   const SizedBox(height: 25),
                 ],
               ),

@@ -77,36 +77,13 @@ class _PerfilSupervisorState extends State<PerfilSupervisor> {
           fullnameController.text = documentSnapshot['fullname'];
           ciController.text = documentSnapshot['ci'].toString();
           phoneController.text = documentSnapshot['phone'].toString();
-          // double latitude = documentSnapshot['lat'] as double;
-          // double longitude = documentSnapshot['long'] as double;
-
-          // lat = latitude;
-          // long = longitude;
+          
           loadProfileImage(widget.user!.uid);
 
-          // final List<Placemark> placemarks =
-          //     await placemarkFromCoordinates(latitude, longitude);
-
-          // if (placemarks.isNotEmpty) {
-          //   final Placemark placemark = placemarks[0];
-          //   final String street = placemark.thoroughfare ?? '';
-          //   final String locality = placemark.locality ?? '';
-          //   final String country = placemark.country ?? '';
-
-          //   final locationString = '$street, $locality, $country';
-          //   locationController.text = locationString;
-          // } else {
-          //   locationController.text = 'No se pudo obtener la ubicación';
-          // }
         } else {
           // Handle the case where the document doesn't exist
           print("No existe el documento.");
         }
-        /* //obtener del metodo de ubicacion
-      final String location = await getUserLocation();
-
-      //imprimir la ubicacion
-      print("Ubicacion: $location"); */
       } else {
         // Handle the case where widget.user is null
         print("El usuario es nulo.");
@@ -121,44 +98,7 @@ class _PerfilSupervisorState extends State<PerfilSupervisor> {
   void initState() {
     super.initState();
     _fetchData();
-    /* getUserLocation(); */
   }
-
-  // double lat = 0.0;
-  // double long = 0.0;
-
-  // Future<String> getUserLocation() async {
-  //   try {
-  //     final List<Placemark> placemarks = await placemarkFromCoordinates(
-  //       lat,
-  //       long,
-  //     );
-
-  //     if (placemarks.isNotEmpty) {
-  //       final Placemark placemark = placemarks[0];
-  //       final String street = placemark.thoroughfare ?? '';
-  //       final String locality = placemark.locality ?? '';
-  //       final String country = placemark.country ?? '';
-
-  //       final formattedAddress = '$street, $locality, $country';
-  //       return formattedAddress;
-  //     } else {
-  //       return 'No se pudo obtener la ubicación';
-  //     }
-  //   } catch (e) {
-  //     print('Error en obteniendo ubicacion del usuario: $e');
-  //     return 'No se pudo obtener la ubicación';
-  //   }
-  // }
-
-  // Future<void> updateLocation() async {
-  //   try {
-  //     final String location = await getUserLocation();
-  //     locationController.text = location;
-  //   } catch (e) {
-  //     print('Error actualizando ubicacion: $e');
-  //   }
-  // }
 
   void editPersonalData() async {
     //i want a navigator to go to the edit perfil page
@@ -221,7 +161,7 @@ class _PerfilSupervisorState extends State<PerfilSupervisor> {
               child: const Text(
                 "Guardar",
                 style: TextStyle(
-                  color: Colors.red,
+                  color: Color.fromRGBO(255, 87, 110, 1),
                 ),
               ),
               onPressed: () {
@@ -263,8 +203,33 @@ class _PerfilSupervisorState extends State<PerfilSupervisor> {
                   ),
                   const SizedBox(height: 25),
                   Stack(
-                    children: [
-                      CircleAvatar(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        if (_image != null) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Dialog(
+                                insetPadding: const EdgeInsets.symmetric(horizontal: 80, vertical: 300),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(MediaQuery.of(context).size.width * 0.6), // make it circular
+                                ),
+                                child: Center(
+                                  child: SizedBox(
+                                    width: MediaQuery.of(context).size.width * 0.8, // adjust this value as needed
+                                    height: MediaQuery.of(context).size.width * 0.8, // adjust this value as needed
+                                    child: ClipOval(
+                                      child: Image.memory(_image!, fit: BoxFit.cover),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        }
+                      },
+                      child: CircleAvatar(
                         radius: 40,
                         backgroundColor: Colors.white,
                         child: _image != null
@@ -281,27 +246,22 @@ class _PerfilSupervisorState extends State<PerfilSupervisor> {
                                 color: Colors.black,
                               ),
                       ),
-                      // if (_image == null)
-                      //   const Positioned.fill(
-                      //     child: Center(
-                      //       child: CircularProgressIndicator(),
-                      //     ),
-                      //   ),
-                      Positioned(
-                        child: IconButton(
-                          onPressed: () {
-                            selectedImageProfile();
-                          },
-                          icon: const Icon(
-                            Icons.add_a_photo,
-                            color: Colors.black,
-                          ),
+                    ),
+                    Positioned(
+                      child: IconButton(
+                        onPressed: () {
+                          selectedImageProfile();
+                        },
+                        icon: const Icon(
+                          Icons.add_a_photo,
+                          color: Colors.black,
                         ),
-                        bottom: -10,
-                        left: 45,
                       ),
-                    ],
-                  ),
+                      bottom: -10,
+                      left: 45,
+                    ),
+                  ],
+                ),
                   FutureBuilder(
                       future: null,
                       builder: (context, snapshot) {
@@ -335,15 +295,6 @@ class _PerfilSupervisorState extends State<PerfilSupervisor> {
                                 isEnabled: false,
                                 isVisible: true,
                               ),
-                              // const SizedBox(height: 15),
-                              // MyTextField(
-                              //   controller: locationController,
-                              //   text: 'Ubicación',
-                              //   hintText: 'Ubicación',
-                              //   obscureText: false,
-                              //   isEnabled: false,
-                              //   isVisible: true,
-                              // ),
                               const SizedBox(height: 15),
                               MyTextField(
                                 controller: phoneController,
@@ -361,17 +312,6 @@ class _PerfilSupervisorState extends State<PerfilSupervisor> {
                           );
                         }
                       }),
-                  const SizedBox(height: 50),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                    child: Text(
-                      widget.user != null
-                          ? 'Iniciado como: ${widget.user?.email}'
-                          : 'Usuario desconocido',
-                      style: const TextStyle(fontSize: 20),
-                    ),
-                  ),
-                  const SizedBox(height: 25),
                 ],
               ),
             ],
@@ -412,7 +352,7 @@ class _PerfilSupervisorState extends State<PerfilSupervisor> {
               child: const Text(
                 'Cerrar Sesión',
                 style: TextStyle(
-                  color: Colors.red,
+                  color: Color.fromRGBO(255, 87, 110, 1),
                 ),
               ),
             ),

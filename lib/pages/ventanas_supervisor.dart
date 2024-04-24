@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:miamiga_app/model/datos_denunciante.dart';
 import 'package:miamiga_app/model/datos_incidente.dart';
-import 'package:miamiga_app/pages/evidencia.dart';
-import 'package:miamiga_app/pages/detalles.dart';
+import 'package:miamiga_app/pages/evidencia_supervisor.dart';
+import 'package:miamiga_app/pages/casos_supervisor.dart';
 import 'package:miamiga_app/pages/perfil_supervisor.dart';
 
 class ScreenSupervisor extends StatefulWidget {

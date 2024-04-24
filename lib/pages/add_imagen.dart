@@ -1,17 +1,17 @@
+// ignore_for_file: unused_field
+
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:io' show File;
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:file_picker/file_picker.dart';
-import 'package:path/path.dart' as Path;
 
 void main() => runApp(const AddMultimediaProductsMovil());
 
 class AddMultimediaProductsMovil extends StatefulWidget {
-  const AddMultimediaProductsMovil({Key? key});
+  const AddMultimediaProductsMovil({super.key});
 
   @override
   State<AddMultimediaProductsMovil> createState() =>
@@ -29,7 +29,6 @@ class _AddMultimediaProductsMovilState
   VideoPlayerController? _controller;
   final picker = ImagePicker();
   bool isVideoPlaying = false;
-  double _uploadProgress = 0.0;
 
   @override
   void initState() {
@@ -37,9 +36,7 @@ class _AddMultimediaProductsMovilState
   }
 
   @override
-  Widget build(BuildContext context) {
-    final dynamic argument = ModalRoute.of(context)!.settings.arguments;
-    //  idProducto = argument as String;
+  Widget build(BuildContext context) {    //  idProducto = argument as String;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Agregar Fotos"),

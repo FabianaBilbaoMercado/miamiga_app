@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:miamiga_app/model/datos_denunciante.dart';
 import 'package:miamiga_app/model/datos_incidente.dart';
-import 'package:miamiga_app/pages/sobre.dart';
-import 'package:miamiga_app/pages/inicio.dart';
+import 'package:miamiga_app/pages/sobre_usuario.dart';
+import 'package:miamiga_app/pages/inicio_usuario.dart';
 
-import 'package:miamiga_app/pages/perfil.dart';
+import 'package:miamiga_app/pages/perfil_usuario.dart';
 
 class Screens extends StatefulWidget {
   const Screens({Key? key}) : super(key: key);
@@ -40,8 +40,14 @@ class _ScreensState extends State<Screens> {
               long: 0,
               imageUrls: [],
               audioUrl: ''),
-          denunciaData:
-              DenuncianteData(ci: 1, fullName: '', phone: 1, lat: 0, long: 0, documentId: '', estado: '')),
+          denunciaData: DenuncianteData(
+              ci: 1,
+              fullName: '',
+              phone: 1,
+              lat: 0,
+              long: 0,
+              documentId: '',
+              estado: '')),
       const SobreScreen(),
       PerfilScreen(user: user!),
     ];

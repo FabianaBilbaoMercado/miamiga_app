@@ -10,7 +10,7 @@ import 'package:miamiga_app/components/my_important_btn.dart';
 import 'package:miamiga_app/components/my_textfield.dart';
 import 'package:miamiga_app/model/datos_denunciante.dart';
 import 'package:miamiga_app/model/datos_incidente.dart';
-import 'package:miamiga_app/pages/alerta.dart';
+import 'package:miamiga_app/pages/alerta_usuario.dart';
 
 class DatosDenunciante extends StatefulWidget {
   final User? user;

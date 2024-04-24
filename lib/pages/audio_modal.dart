@@ -110,16 +110,19 @@ class _AudioModalState extends State<AudioModal> {
                   child: ElevatedButton.icon(
                     onPressed: () {
                       widget.onAudiosSelected().then((List<File> newAudios) {
-                        setState(() {
-                          widget.pickedAudios.addAll(newAudios);
-                          isPlaying = false;
-                          audioPlayer.stop();
-                        });
+                        if (mounted) {
+                          setState(() {
+                            widget.pickedAudios.addAll(newAudios);
+                            isPlaying = false;
+                            audioPlayer.stop();
+                          });
+                        }
                       });
                     },
                     icon: const Icon(
                       Icons.music_note,
                       size: 50,
+                      color: Colors.white,
                     ),
                     label: const SizedBox.shrink(),
                     style: ElevatedButton.styleFrom(
